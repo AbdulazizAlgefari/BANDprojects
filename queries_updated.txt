@@ -1,0 +1,73 @@
+/* Query 1 – What is the Total Revenue for each media type */
+SELECT
+  mt.Name                                AS media_type,
+  SUM(il.Quantity * il.UnitPrice)        AS total_revenue
+FROM
+  InvoiceLine il
+JOIN
+  Track t   ON il.TrackId     = t.TrackId
+JOIN
+  MediaType mt ON t.MediaTypeId = mt.MediaTypeId
+GROUP BY
+  mt.Name
+ORDER BY
+  total_revenue DESC;
+
+
+
+------------------------
+/* Query 2 – Total revenue by customer country */
+SELECT
+  c.Country                           AS customer_country,
+  SUM(il.Quantity * il.UnitPrice)     AS total_revenue
+FROM
+  Customer c
+JOIN
+  Invoice i     ON c.CustomerId = i.CustomerId
+JOIN
+  InvoiceLine il ON i.InvoiceId  = il.InvoiceId
+GROUP BY
+  c.Country
+ORDER BY
+  total_revenue DESC;
+
+
+
+-------------------------------
+
+/* Query 3 – What is the total revenue for each artist */
+SELECT 
+    ar.Name       AS ArtistName,
+    SUM(il.UnitPrice * il.Quantity) AS ArtistRevenue
+FROM 
+    InvoiceLine il
+JOIN 
+    Track t ON t.TrackId = il.TrackId
+JOIN 
+    Album al ON al.AlbumId = t.AlbumId
+JOIN 
+    Artist ar ON ar.ArtistId = al.ArtistId
+GROUP BY 
+    ar.Name
+ORDER BY 
+    ArtistRevenue DESC
+LIMIT 10;
+
+
+----------------------
+/* Query 4 – Top 12 genres by tracks sold */
+SELECT
+  g.Name             AS Genre,
+  COUNT(il.TrackId)  AS TracksSold
+FROM
+  InvoiceLine il
+JOIN
+  Track t ON il.TrackId = t.TrackId
+JOIN
+  Genre g ON g.GenreId  = t.GenreId
+GROUP BY
+  g.Name
+ORDER BY
+  TracksSold DESC
+LIMIT 12;
+
